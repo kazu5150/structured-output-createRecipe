@@ -43,8 +43,11 @@ def generate_recipe(prompt: str) -> Recipe:
         completion = client.chat.completions.create(
             model="gpt-4-turbo-preview",
             messages=[
-                {"role": "system", "content": "あなたは創造的なシェフで、ユーザーの要望に基づいてレシピを生成します。レシピはJSON形式で出力してください。"},
-                {"role": "user", "content": f"以下の要望に基づいてレシピを生成し、JSON形式で返してください：{prompt}"}
+                {"role": "system",
+                 "content": "あなたは創造的なシェフで、ユーザーの要望に基づいてレシピを生成します。"
+                 "レシピはJSON形式で出力してください。"},
+                {"role": "user",
+                 "content": f"以下の要望に基づいてレシピを生成し、JSON形式で返してください：{prompt}"}
             ],
             response_format={"type": "json_object"},
             functions=[{
@@ -54,7 +57,8 @@ def generate_recipe(prompt: str) -> Recipe:
             }],
             function_call={"name": "create_recipe"}
         )
-        recipe_data = json.loads(completion.choices[0].message.function_call.arguments)
+        recipe_data = json.loads(
+            completion.choices[0].message.function_call.arguments)
         return Recipe(**recipe_data)
     except Exception as e:
         print(f"レシピの生成中にエラーが発生しました: {e}")
